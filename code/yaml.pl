@@ -7,7 +7,7 @@ use utf8;
 
 say "start  :(";
 
-my $source = 'raw/*';
+my $source = '../raw/poem/*';
 my @raws = glob ($source);
 
 my $yaml = add_yaml_head();
@@ -45,7 +45,7 @@ sub slurp_file {
 
 sub write_file {
 	my $yaml = shift;
-	open (my $fh, '>:encoding(UTF-8)', 'hafez.yaml') or die $!;
+	open (my $fh, '>:encoding(UTF-8)', 'db/hafez.yaml') or die $!;
 	print $fh $yaml;
 	close $fh;
 }
