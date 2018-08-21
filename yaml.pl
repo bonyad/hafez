@@ -5,7 +5,7 @@ use warnings;
 use v5.012;
 use utf8;
 
-say "start...";
+say "start  :(";
 
 my $source = 'raw/*';
 my @raws = glob ($source);
@@ -23,7 +23,7 @@ foreach my $raw (@raws) {
 
 write_file($yaml);
 
-say "...done :)";
+say "finish :)";
 
 sub slurp_file {
 	my $file = shift;
