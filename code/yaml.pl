@@ -45,7 +45,7 @@ sub slurp_file {
 
 sub write_file {
 	my $yaml = shift;
-	open (my $fh, '>:encoding(UTF-8)', 'db/hafez.yaml') or die $!;
+	open (my $fh, '>:encoding(UTF-8)', 'db/poem/hafez.yaml') or die $!;
 	print $fh $yaml;
 	close $fh;
 }
