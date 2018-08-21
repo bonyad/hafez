@@ -18,6 +18,9 @@ foreach my $raw (@raws) {
 	$yaml .= "  $num:\n";
 	my $content = slurp_file($raw);
 	$content =~ s/^/    - /mg;
+	$content =~ s/ ی\b/‌ی/g;
+	$content =~ s/ ها\b/‌ها/g;
+	$content =~ s/ ای\b/‌ای/g;
 	$yaml .= $content . "\n";
 }
 
