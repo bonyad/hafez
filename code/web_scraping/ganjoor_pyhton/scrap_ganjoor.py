@@ -7,9 +7,9 @@ from bs4 import BeautifulSoup
 import re
 from unidecode import unidecode
 import os
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 
-ganjoor_page = "https://ganjoor.net/hafez/montasab/"
+ganjoor_page = "https://ganjoor.net/hafez/ghazal/"
 
 
 def getPoemsUrl(url):
@@ -88,9 +88,9 @@ def main():
     print("\n".join(poems_url))
 
     print("\nGet and save Poems ...")
-    threads = [Thread(target=savePoem, args=(url,)) for url in poems_url]
-    [t.start() for t in threads]
-    [t.join() for t in threads]
+    t = ThreadPoolExecutor(max_workers=50)
+    t.map(savePoem, poems_url)
+    t.shutdown()
 
     print("Done!")
 
