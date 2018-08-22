@@ -46,9 +46,17 @@ def getPoem(url):
     try:
         bsObj = BeautifulSoup(html.read(), "html.parser")
         poem = []
-        for distich in bsObj.findAll("div", {"class": "b"}):
-            # print(distich.get_text())
-            poem.append(distich.get_text())
+        for raw_mesra in bsObj.findAll("div", {"class": "b"}):
+            # print((raw_mesra))
+            re_mesra = re.compile(
+                r'<div class="b"><div class="m1"><p>(.*)</p></div><div class="m2"><p>(.*)</p></div></div>'
+            )
+            mesra = re_mesra.findall(str(raw_mesra).replace("\n", ""))
+            # print(mesra)
+            poem.append(mesra[0][0] + "\n")
+            poem.append(mesra[0][1] + "\n\n")
+            # print("--------------------------")
+
     except AttributeError as e:
         print(e)
         return None
@@ -65,9 +73,9 @@ def main():
     for i in range(len(poems_url)):
         url = poems_url[i]
         print(url)
-        poem = getPoem(url)
+        poem = getPoem(url).rstrip()
         print(poem)
-        poem_number = int(re.findall(r"sh\d+", url)[0].replace("sh", ""))
+        poem_number = int(re.findall(r"sh(\d+)", url)[0])
         print("poem number= {}".format(poem_number))
         output_file_path_and_name = output_file_path + "/{0:03d}.txt".format(
             poem_number
