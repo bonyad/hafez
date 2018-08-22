@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import re
 from unidecode import unidecode
 import os
+from threading import Thread
 
 ganjoor_page = "https://ganjoor.net/hafez/montasab/"
 
@@ -68,26 +69,28 @@ def getPoem(url):
     return "".join(poem)
 
 
+def savePoem(url):
+    # print(url)
+    poem = getPoem(url).rstrip()
+    # print(poem)
+    poem_number = int(re.findall(r"sh(\d+)", url)[0])
+    # print("poem number= {}".format(poem_number))
+    output_file_path_and_name = output_file_path + "/{0:03d}.txt".format(poem_number)
+    # print("Save to " + output_file_path_and_name)
+    with open(output_file_path_and_name, "w", encoding="utf-8") as text_file:
+        text_file.write(poem)
+    print("poem number= {0:03d} saved!".format(poem_number))
+
+
 def main():
     print("Get Poems URL ...")
     poems_url = getPoemsUrl(ganjoor_page)
     print("\n".join(poems_url))
 
-    print("\nGet Poem ...")
-    for i in range(len(poems_url)):
-        url = poems_url[i]
-        print(url)
-        poem = getPoem(url).rstrip()
-        print(poem)
-        poem_number = int(re.findall(r"sh(\d+)", url)[0])
-        print("poem number= {}".format(poem_number))
-        output_file_path_and_name = output_file_path + "/{0:03d}.txt".format(
-            poem_number
-        )
-        print("Save to " + output_file_path_and_name)
-        with open(output_file_path_and_name, "w", encoding="utf-8") as text_file:
-            text_file.write(poem)
-        print("----------------------------------------------")
+    print("\nGet and save Poems ...")
+    threads = [Thread(target=savePoem, args=(url,)) for url in poems_url]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
 
     print("Done!")
 
