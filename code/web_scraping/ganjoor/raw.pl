@@ -5,32 +5,37 @@ use warnings;
 use utf8;
 use v5.016;
 
-binmode STDOUT, ":utf8";
-
+use Path::Tiny;
 use File::Temp;
 use File::Spec;
 use Cwd;
-use Path::Tiny;
 
+########################
+######## UI?! ##########
 print "motif (ex: https://ganjoor.net/hafez/ghazal/sh): ";
-my $motif = <STDIN>;
-chomp $motif;
+my $motif = <STDIN>; chomp $motif;
 
 print "max num (ex: 495): ";
-my $max_num = <STDIN>;
-chomp $max_num;
+my $max_num = <STDIN>; chomp $max_num;
 my @numbers = (1..$max_num);
 
 print "style (ex: ghazal): ";
-my $model = <STDIN>;
-chomp $model;
+my $model = <STDIN>; chomp $model;
+######## /UI :) ##########
 
+
+###############################
+######## make/find paths ######
 my $temp_dir = File::Temp->newdir();
-my @dirs = File::Spec->splitdir( cwd );
+my @dirs     = File::Spec->splitdir( cwd );
 splice(@dirs,-3);
-my $raw_source = File::Spec->catdir(@dirs,'rawdata','poem',$model);
+my $raw_source  = File::Spec->catdir(@dirs,'rawdata','poem',$model);
 my $yaml_source = File::Spec->catfile(@dirs,'database','poem',"$model.yaml");
+######## /// ####################
 
+
+############################################
+######### Download files (parallel) ########
 use AnyEvent;
 use AnyEvent::HTTP;
 
@@ -47,9 +52,14 @@ foreach my $number (@numbers) {
         $cv->end;
     };
 }
-
 $cv->recv;
+############# // ##############################
 
+
+##############################################
+######## read Downloaded Files ###############
+######## write raw and yaml files ############
+######## just try use core modules ###########
 my $glob = File::Spec->catfile($temp_dir,'*');
 my @htmls = glob ($glob);
 @htmls = grep {/\d+\.html$/} @htmls;
@@ -66,7 +76,7 @@ foreach my $html (@htmls) {
 }
 
 write_yaml(\%data, $yaml_source, $model);
-
+########### // #################################
 
 
 
