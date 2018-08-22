@@ -13,14 +13,17 @@ use Cwd;
 ########################
 ######## UI?! ##########
 print "motif (ex: https://ganjoor.net/hafez/ghazal/sh): ";
-my $motif = "https://ganjoor.net/hafez/montasab/sh"; <STDIN>; chomp $motif;
+my $motif = <STDIN>; chomp $motif;
 
 print "max num (ex: 495): ";
 my $max_num = <STDIN>; chomp $max_num;
 my @numbers = (1..23);
 
+#print "poet (ex: hafez): ";
+#my $poet = <STDIN>; chomp $poet;
+
 print "style (ex: ghazal): ";
-my $model = "montasab"; <STDIN>; chomp $model;
+my $model = <STDIN>; chomp $model;
 ######## /UI :) ##########
 
 
@@ -83,14 +86,9 @@ write_yaml(\%data, $yaml_source, $model);
 
 sub slurp_file {
 	my $file = shift;
+	$file = path($file);
 	my @poem;
-	my $content;
-	{
-        open my $fh, '<:encoding(UTF-8)', $file or die $!;
-        local $/ = undef;
-        $content = <$fh>;
-        close $fh;
-    }
+	my $content = $file->slurp_utf8;
 	while (
       $content =~ m{<div class="b">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<div class="m1">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)(.*?)(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<div class="m2">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)(.*?)(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>}g	) {
         push @poem, ($1, $2, 'delimeter');
@@ -103,6 +101,8 @@ sub slurp_file {
 sub write_raw {
 	my ($raw_source,$num,$poem) = @_;
 	my $raw_file = File::Spec->catfile($raw_source,"$num.txt");
+	my $file = path($raw_file);
+	$file->touchpath if (not $file->is_file);
 	open (my $fh, '>:encoding(UTF-8)', $raw_file) or die $!;
 	print $fh $poem;
 	close $fh;
