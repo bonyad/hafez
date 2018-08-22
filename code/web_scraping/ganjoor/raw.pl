@@ -91,10 +91,8 @@ sub slurp_file {
         $content = <$fh>;
         close $fh;
     }
-	$content =~ s/(?:(?:\n)+|(?:\r\n)+)//mg;
 	while (
-      $content =~ m{<div class="b"><div class="m1"><p>(.*?)</p></div><div class="m2"><p>(.*?)</p></div></div>}g
-	) {
+      $content =~ m{<div class="b">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<div class="m1">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)(.*?)(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<div class="m2">(?:(?:\n)*|(?:\r\n)*|(?:\r)*)<p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)(.*?)(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</p>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>(?:(?:\n)*|(?:\r\n)*|(?:\r)*)</div>}g	) {
         push @poem, ($1, $2, 'delimeter');
     }
 	my $poem = join ("\n", @poem);
