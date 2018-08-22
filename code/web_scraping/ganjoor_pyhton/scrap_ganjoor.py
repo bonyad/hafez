@@ -48,10 +48,14 @@ def getPoem(url):
         poem = []
         for raw_mesra in bsObj.findAll("div", {"class": "b"}):
             # print((raw_mesra))
+            raw_mesra = str(raw_mesra)
+            for nlChar in ["\n", "\r\n", "\r"]:
+                if nlChar in raw_mesra:
+                    raw_mesra = raw_mesra.replace(nlChar, "")
             re_mesra = re.compile(
                 r'<div class="b"><div class="m1"><p>(.*)</p></div><div class="m2"><p>(.*)</p></div></div>'
             )
-            mesra = re_mesra.findall(str(raw_mesra).replace("\n", ""))
+            mesra = re_mesra.findall(raw_mesra)
             # print(mesra)
             poem.append(mesra[0][0] + "\n")
             poem.append(mesra[0][1] + "\n\n")
