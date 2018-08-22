@@ -13,14 +13,14 @@ use Cwd;
 ########################
 ######## UI?! ##########
 print "motif (ex: https://ganjoor.net/hafez/ghazal/sh): ";
-my $motif = <STDIN>; chomp $motif;
+my $motif = "https://ganjoor.net/hafez/montasab/sh"; <STDIN>; chomp $motif;
 
 print "max num (ex: 495): ";
 my $max_num = <STDIN>; chomp $max_num;
-my @numbers = (1..$max_num);
+my @numbers = (1..23);
 
 print "style (ex: ghazal): ";
-my $model = <STDIN>; chomp $model;
+my $model = "montasab"; <STDIN>; chomp $model;
 ######## /UI :) ##########
 
 
@@ -91,8 +91,9 @@ sub slurp_file {
         $content = <$fh>;
         close $fh;
     }
+	$content =~ s/(\n)+|(\r\n)+//mg;
 	while (
-      $content =~ m{<div class="b"><div class="m1"><p>(.*)</p></div><div class="m2"><p>(.*)</p></div></div>}g
+      $content =~ m{<div class="b"><div class="m1"><p>(.*?)</p></div><div class="m2"><p>(.*?)</p></div></div>}g
 	) {
         push @poem, ($1, $2, 'delimeter');
     }
