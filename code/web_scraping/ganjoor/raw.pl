@@ -91,7 +91,7 @@ sub slurp_file {
         $content = <$fh>;
         close $fh;
     }
-	$content =~ s/(\n)+|(\r\n)+//mg;
+	$content =~ s/(?:(?:\n)+|(?:\r\n)+)//mg;
 	while (
       $content =~ m{<div class="b"><div class="m1"><p>(.*?)</p></div><div class="m2"><p>(.*?)</p></div></div>}g
 	) {
