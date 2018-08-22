@@ -8,7 +8,7 @@ import re
 from unidecode import unidecode
 import os
 
-ganjoor_page = "https://ganjoor.net/hafez/robaee2/"
+ganjoor_page = "https://ganjoor.net/hafez/montasab/"
 
 
 def getPoemsUrl(url):
@@ -63,13 +63,16 @@ def main():
 
     print("\nGet Poem ...")
     for i in range(len(poems_url)):
-        print(i)
         url = poems_url[i]
         print(url)
         poem = getPoem(url)
         print(poem)
-        print("Save to corresponding .txt files")
-        output_file_path_and_name = output_file_path + "/{0:03d}.txt".format(i + 1)
+        poem_number = int(re.findall(r"sh\d+", url)[0].replace("sh", ""))
+        print("poem number= {}".format(poem_number))
+        output_file_path_and_name = output_file_path + "/{0:03d}.txt".format(
+            poem_number
+        )
+        print("Save to " + output_file_path_and_name)
         with open(output_file_path_and_name, "w", encoding="utf-8") as text_file:
             text_file.write(poem)
         print("----------------------------------------------")
